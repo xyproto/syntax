@@ -108,7 +108,7 @@ func (p TextPrinter) Print(w io.Writer, kind Kind, tokText string) error {
 		if err != nil {
 			return err
 		}
-		_, err = w.Write([]byte(`">`))
+		_, err = w.Write([]byte(`>`))
 		if err != nil {
 			return err
 		}
@@ -134,7 +134,7 @@ func (a TextAnnotator) Annotate(start int, kind Kind, tokText string) (*annotate
 	if class != "" {
 		left := []byte(`<`)
 		left = append(left, []byte(class)...)
-		left = append(left, []byte(`">`)...)
+		left = append(left, []byte(`>`)...)
 		return &annotate.Annotation{
 			Start: start, End: start + len(tokText),
 			Left: left, Right: []byte("<off>"),
@@ -150,16 +150,16 @@ type Option func(options *TextConfig)
 // DefaultTextConfig provides class names that match the color names of
 // textoutput tags: https://github.com/xyproto/textoutput
 var DefaultTextConfig = TextConfig{
-	String:        "red",
-	Keyword:       "green",
+	String:        "yellow",
+	Keyword:       "cyan",
 	Comment:       "gray",
 	Type:          "blue",
-	Literal:       "yellow",
+	Literal:       "magenta",
 	Punctuation:   "magenta",
 	Plaintext:     "gray",
 	Tag:           "cyan",
 	TextTag:       "yellow",
-	TextAttrName:  "red",
+	TextAttrName:  "yellow",
 	TextAttrValue: "green",
 	Decimal:       "blue",
 	Whitespace:    "",
