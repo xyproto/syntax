@@ -1,12 +1,14 @@
-// Package syntax provides syntax highlighting for code. It currently
+// Package syntaxhighlight provides syntax highlighting for code. It currently
 // uses a language-independent lexer and performs decently on JavaScript, Java,
 // Ruby, Python, Go, and C.
-package syntax
+package syntaxhighlight
 
 import (
 	"bytes"
 	"io"
+	"strings"
 	"text/scanner"
+	"text/template"
 	"unicode"
 	"unicode/utf8"
 
@@ -28,23 +30,23 @@ const (
 	Punctuation
 	Plaintext
 	Tag
-	TextTag
-	TextAttrName
-	TextAttrValue
+	HTMLTag
+	HTMLAttrName
+	HTMLAttrValue
 	Decimal
 )
 
 //go:generate gostringer -type=Kind
 
 // Printer implements an interface to render highlighted output
-// (see TextPrinter for the implementation of this interface)
+// (see HTMLPrinter for the implementation of this interface)
 type Printer interface {
 	Print(w io.Writer, kind Kind, tokText string) error
 }
 
-// TextConfig holds the Text class configuration to be used by annotators when
+// HTMLConfig holds the HTML class configuration to be used by annotators when
 // highlighting code.
-type TextConfig struct {
+type HTMLConfig struct {
 	String        string
 	Keyword       string
 	Comment       string
@@ -53,19 +55,21 @@ type TextConfig struct {
 	Punctuation   string
 	Plaintext     string
 	Tag           string
-	TextTag       string
-	TextAttrName  string
-	TextAttrValue string
+	HTMLTag       string
+	HTMLAttrName  string
+	HTMLAttrValue string
 	Decimal       string
 	Whitespace    string
+
+	AsOrderedList bool
 }
 
-// TextPrinter implements Printer interface and is used to produce
-// Text-based highligher
-type TextPrinter TextConfig
+// HTMLPrinter implements Printer interface and is used to produce
+// HTML-based highligher
+type HTMLPrinter HTMLConfig
 
 // Class returns the set class for a given token Kind.
-func (c TextConfig) Class(kind Kind) string {
+func (c HTMLConfig) Class(kind Kind) string {
 	switch kind {
 	case String:
 		return c.String
@@ -83,12 +87,12 @@ func (c TextConfig) Class(kind Kind) string {
 		return c.Plaintext
 	case Tag:
 		return c.Tag
-	case TextTag:
-		return c.TextTag
-	case TextAttrName:
-		return c.TextAttrName
-	case TextAttrValue:
-		return c.TextAttrValue
+	case HTMLTag:
+		return c.HTMLTag
+	case HTMLAttrName:
+		return c.HTMLAttrName
+	case HTMLAttrValue:
+		return c.HTMLAttrValue
 	case Decimal:
 		return c.Decimal
 	}
@@ -96,11 +100,24 @@ func (c TextConfig) Class(kind Kind) string {
 }
 
 // Print is the function that emits highlighted source code using
-// <color>...<off> wrapper tags
-func (p TextPrinter) Print(w io.Writer, kind Kind, tokText string) error {
-	class := ((TextConfig)(p)).Class(kind)
+// <span class="...">...</span> wrapper tags
+func (p HTMLPrinter) Print(w io.Writer, kind Kind, tokText string) error {
+	if p.AsOrderedList {
+		if i := strings.Index(tokText, "\n"); i > -1 {
+			if err := p.Print(w, kind, tokText[:i]); err != nil {
+				return err
+			}
+			w.Write([]byte("</li>\n<li>"))
+			if err := p.Print(w, kind, tokText[i+1:]); err != nil {
+				return err
+			}
+			return nil
+		}
+	}
+
+	class := ((HTMLConfig)(p)).Class(kind)
 	if class != "" {
-		_, err := w.Write([]byte(`<`))
+		_, err := w.Write([]byte(`<span class="`))
 		if err != nil {
 			return err
 		}
@@ -113,9 +130,9 @@ func (p TextPrinter) Print(w io.Writer, kind Kind, tokText string) error {
 			return err
 		}
 	}
-	w.Write([]byte(tokText))
+	template.HTMLEscape(w, []byte(tokText))
 	if class != "" {
-		_, err := w.Write([]byte(`<off>`))
+		_, err := w.Write([]byte(`</span>`))
 		if err != nil {
 			return err
 		}
@@ -127,41 +144,52 @@ type Annotator interface {
 	Annotate(start int, kind Kind, tokText string) (*annotate.Annotation, error)
 }
 
-type TextAnnotator TextConfig
+type HTMLAnnotator HTMLConfig
 
-func (a TextAnnotator) Annotate(start int, kind Kind, tokText string) (*annotate.Annotation, error) {
-	class := ((TextConfig)(a)).Class(kind)
+func (a HTMLAnnotator) Annotate(start int, kind Kind, tokText string) (*annotate.Annotation, error) {
+	class := ((HTMLConfig)(a)).Class(kind)
 	if class != "" {
-		left := []byte(`<`)
+		left := []byte(`<span class="`)
 		left = append(left, []byte(class)...)
 		left = append(left, []byte(`">`)...)
 		return &annotate.Annotation{
 			Start: start, End: start + len(tokText),
-			Left: left, Right: []byte("<off>"),
+			Left: left, Right: []byte("</span>"),
 		}, nil
 	}
 	return nil, nil
 }
 
 // Option is a type of the function that can modify
-// one or more of the options in the TextConfig structure.
-type Option func(options *TextConfig)
+// one or more of the options in the HTMLConfig structure.
+type Option func(options *HTMLConfig)
 
-// DefaultTextConfig provides class names that match the color names of
-// textoutput tags: https://github.com/xyproto/textoutput
-var DefaultTextConfig = TextConfig{
-	String:        "red",
-	Keyword:       "green",
-	Comment:       "gray",
-	Type:          "blue",
-	Literal:       "yellow",
-	Punctuation:   "magenta",
-	Plaintext:     "gray",
-	Tag:           "cyan",
-	TextTag:       "yellow",
-	TextAttrName:  "red",
-	TextAttrValue: "green",
-	Decimal:       "blue",
+// OrderedList allows you to format the output as an ordered list
+// to have line numbers in the output.
+//
+// Example:
+// AsHTML(input, OrderedList())
+func OrderedList() Option {
+	return func(o *HTMLConfig) {
+		o.AsOrderedList = true
+	}
+}
+
+// DefaultHTMLConfig provides class names that match those of google-code-prettify
+// (https://code.google.com/p/google-code-prettify/).
+var DefaultHTMLConfig = HTMLConfig{
+	String:        "str",
+	Keyword:       "kwd",
+	Comment:       "com",
+	Type:          "typ",
+	Literal:       "lit",
+	Punctuation:   "pun",
+	Plaintext:     "pln",
+	Tag:           "tag",
+	HTMLTag:       "htm",
+	HTMLAttrName:  "atn",
+	HTMLAttrValue: "atv",
+	Decimal:       "dec",
 	Whitespace:    "",
 }
 
@@ -205,17 +233,23 @@ func Annotate(src []byte, a Annotator) (annotate.Annotations, error) {
 	return anns, nil
 }
 
-// AsText converts source code into an Text-highlighted version;
+// AsHTML converts source code into an HTML-highlighted version;
 // It accepts optional configuration parameters to control rendering
 // (see OrderedList as one example)
-func AsText(src []byte, options ...Option) ([]byte, error) {
-	opt := DefaultTextConfig
+func AsHTML(src []byte, options ...Option) ([]byte, error) {
+	opt := DefaultHTMLConfig
 	for _, f := range options {
 		f(&opt)
 	}
 
 	var buf bytes.Buffer
-	err := Print(NewScanner(src), &buf, TextPrinter(opt))
+	if opt.AsOrderedList {
+		buf.Write([]byte("<ol>\n<li>"))
+	}
+	err := Print(NewScanner(src), &buf, HTMLPrinter(opt))
+	if opt.AsOrderedList {
+		buf.Write([]byte("</li>\n</ol>"))
+	}
 	if err != nil {
 		return nil, err
 	}

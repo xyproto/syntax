@@ -1,4 +1,4 @@
-package syntaxhighlight_test
+package syntax
 
 import (
 	"fmt"

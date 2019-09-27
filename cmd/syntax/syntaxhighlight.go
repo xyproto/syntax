@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 
-	"github.com/sourcegraph/syntaxhighlight"
+	"github.com/xyproto/syntax"
 )
 
 func main() {
@@ -23,10 +23,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	html, err := syntaxhighlight.AsHTML(input)
+	text, err := syntaxhighlight.AsText(input)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("%s", html)
+	fmt.Printf("%s", text)
 }

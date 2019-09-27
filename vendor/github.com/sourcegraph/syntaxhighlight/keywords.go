@@ -1,4 +1,4 @@
-package syntax
+package syntaxhighlight
 
 var keywords = map[string]struct{}{
 	"BEGIN":            {},
