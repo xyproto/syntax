@@ -1,4 +1,13 @@
+# github.com/pkg/term v0.0.0-20190109203006-aa71e9d9e942
+github.com/pkg/term
+github.com/pkg/term/termios
 # github.com/sourcegraph/annotate v0.0.0-20160123013949-f4cad6c6324d
 github.com/sourcegraph/annotate
 # github.com/sourcegraph/syntaxhighlight v0.0.0-20170531221838-bd320f5d308e
 github.com/sourcegraph/syntaxhighlight
+# github.com/xyproto/textoutput v1.7.0
+github.com/xyproto/textoutput
+# github.com/xyproto/vt100 v1.4.0
+github.com/xyproto/vt100
+# golang.org/x/sys v0.0.0-20190919044723-0c1ff786ef13
+golang.org/x/sys/unix
