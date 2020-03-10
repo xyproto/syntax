@@ -124,7 +124,6 @@ var keywords = map[string]struct{}{
 	"operator":         {},
 	"or":               {},
 	"our":              {},
-	"package":          {},
 	"pass":             {},
 	"print":            {},
 	"private":          {},
@@ -186,6 +185,8 @@ var keywords = map[string]struct{}{
 	"yield":            {},
 	"#define":          {},
 	"#endif":           {},
+	"#ifdef":           {},
+	"#ifndef":          {},
 	"#include":         {},
 	"#pragma":          {},
 }
