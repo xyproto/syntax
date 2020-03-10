@@ -124,6 +124,7 @@ var keywords = map[string]struct{}{
 	"operator":         {},
 	"or":               {},
 	"our":              {},
+	"package ":         {},
 	"pass":             {},
 	"print":            {},
 	"private":          {},
