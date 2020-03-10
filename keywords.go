@@ -1,6 +1,6 @@
 package syntax
 
-var keywords = map[string]struct{}{
+var Keywords = map[string]struct{}{
 	"BEGIN":            {},
 	"END":              {},
 	"False":            {},
@@ -124,7 +124,7 @@ var keywords = map[string]struct{}{
 	"operator":         {},
 	"or":               {},
 	"our":              {},
-	"package ":         {},
+	"package":          {},
 	"pass":             {},
 	"print":            {},
 	"private":          {},
