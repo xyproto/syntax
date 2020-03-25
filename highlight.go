@@ -260,9 +260,7 @@ func tokenKind(tok rune, tokText string, inSingleLineComment *bool) Kind {
 		return Comment
 	}
 	// If this is "&&" or "||", return an AndOr
-	//if tokText == "||" || tokText == "&&" {
-	if r, _ := utf8.DecodeRuneInString(tokText); r == '|' || r == '&' {
-		//unicode.IsUpper(r) {
+	if tokText == "||" || tokText == "&&" {
 		return AndOr
 	}
 	// If not, do the regular switch
