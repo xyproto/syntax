@@ -166,7 +166,7 @@ var DefaultTextConfig = TextConfig{
 	TextAttrName:  "white",
 	TextAttrValue: "white",
 	Decimal:       "red",
-	AndOr:         "magenta",
+	AndOr:         "red",
 	Whitespace:    "",
 }
 
@@ -259,10 +259,6 @@ func tokenKind(tok rune, tokText string, inSingleLineComment *bool) Kind {
 	if *inSingleLineComment {
 		return Comment
 	}
-	// If this is "&&" or "||", return an AndOr
-	if tokText == "||" || tokText == "&&" {
-		return AndOr
-	}
 	// If not, do the regular switch
 	switch tok {
 	case scanner.Ident:
@@ -279,6 +275,9 @@ func tokenKind(tok rune, tokText string, inSingleLineComment *bool) Kind {
 		return String
 	case scanner.Comment:
 		return Comment
+	}
+	if tok == '&' || tok == '|' {
+		return AndOr
 	}
 	if unicode.IsSpace(tok) {
 		return Whitespace
