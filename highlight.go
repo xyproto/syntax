@@ -177,11 +177,16 @@ var DefaultTextConfig = TextConfig{
 }
 
 func Print(s *scanner.Scanner, w io.Writer, p Printer) error {
-	tok := s.Scan()
-	inSingleLineComment := false
+	var (
+		tok                 = s.Scan()
+		inSingleLineComment = false
+		encounteredSlash    = false
+		encounteredStar     = false
+		inMultiLineComment  = false
+	)
 	for tok != scanner.EOF {
 		tokText := s.TokenText()
-		err := p.Print(w, tokenKind(tok, tokText, &inSingleLineComment), tokText)
+		err := p.Print(w, tokenKind(tok, tokText, &inSingleLineComment, &encounteredSlash, &encounteredStar, &inMultiLineComment), tokText)
 		if err != nil {
 			return err
 		}
@@ -198,11 +203,14 @@ func Annotate(src []byte, a Annotator) (annotate.Annotations, error) {
 		s                   = NewScanner(src)
 		read                = 0
 		inSingleLineComment = false
+		encounteredSlash    = false
+		encounteredStar     = false
+		inMultiLineComment  = false
 		tok                 = s.Scan()
 	)
 	for tok != scanner.EOF {
 		tokText := s.TokenText()
-		ann, err := a.Annotate(read, tokenKind(tok, tokText, &inSingleLineComment), tokText)
+		ann, err := a.Annotate(read, tokenKind(tok, tokText, &inSingleLineComment, &encounteredSlash, &encounteredStar, &inMultiLineComment), tokText)
 		if err != nil {
 			return nil, err
 		}
@@ -248,12 +256,27 @@ func NewScannerReader(src io.Reader) *scanner.Scanner {
 	return &s
 }
 
-func tokenKind(tok rune, tokText string, inSingleLineComment *bool) Kind {
+func tokenKind(tok rune, tokText string, inSingleLineComment, encounteredSlash, encounteredStar, inMultiLineComment *bool) Kind {
 	// Check if we are in a bash-style single line comment, or assembly-style single line comments
 	if tok == '#' || (tok == ';' && strings.HasPrefix(tokText, ";")) {
 		*inSingleLineComment = true
 	} else if tok == '\n' {
 		*inSingleLineComment = false
+	}
+	if tok == '/' {
+		*encounteredSlash = true
+	} else if tok == '*' {
+		*encounteredStar = true
+	}
+	if *encounteredStar && tok == '/' {
+		*inMultiLineComment = false
+	} else if *encounteredSlash && tok == '*' {
+		*inMultiLineComment = true
+	}
+	if tok != '/' {
+		*encounteredSlash = false
+	} else if tok != '*' {
+		*encounteredStar = false
 	}
 	// Check if this is #include or #define
 	if tokText == "include" || tokText == "define" || tokText == "ifdef" || tokText == "ifndef" || tokText == "endif" {
@@ -262,7 +285,7 @@ func tokenKind(tok rune, tokText string, inSingleLineComment *bool) Kind {
 		return Keyword
 	}
 	// If we are, return the Comment kind
-	if *inSingleLineComment {
+	if *inSingleLineComment || *inMultiLineComment {
 		return Comment
 	}
 	// If not, do the regular switch
