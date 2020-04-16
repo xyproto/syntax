@@ -6,7 +6,6 @@ package syntax
 import (
 	"bytes"
 	"io"
-	"strings"
 	"text/scanner"
 	"unicode"
 	"unicode/utf8"
