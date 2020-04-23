@@ -34,6 +34,7 @@ const (
 	Decimal
 	AndOr
 	Star
+	ClassRelated
 )
 
 //go:generate gostringer -type=Kind
@@ -62,6 +63,7 @@ type TextConfig struct {
 	AndOr         string
 	Star          string
 	Whitespace    string
+	ClassRelated  string
 }
 
 // TextPrinter implements Printer interface and is used to produce
@@ -99,6 +101,8 @@ func (c TextConfig) Class(kind Kind) string {
 		return c.AndOr
 	case Star:
 		return c.Star
+	case ClassRelated:
+		return c.ClassRelated
 	}
 	return ""
 }
@@ -173,6 +177,7 @@ var DefaultTextConfig = TextConfig{
 	AndOr:         "red",
 	Star:          "white",
 	Whitespace:    "",
+	ClassRelated:  "white",
 }
 
 func Print(s *scanner.Scanner, w io.Writer, p Printer) error {
@@ -269,6 +274,9 @@ func tokenKind(tok rune, tokText string, inSingleLineComment *bool) Kind {
 	case scanner.Ident:
 		if _, isKW := Keywords[tokText]; isKW {
 			return Keyword
+		}
+		if tokText == "private" || tokText == "public" || tokText == "class" {
+			return ClassRelated
 		}
 		if r, _ := utf8.DecodeRuneInString(tokText); unicode.IsUpper(r) {
 			return Type
