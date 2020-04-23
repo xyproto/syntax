@@ -275,7 +275,7 @@ func tokenKind(tok rune, tokText string, inSingleLineComment *bool) Kind {
 		if _, isKW := Keywords[tokText]; isKW {
 			return Keyword
 		}
-		if tokText == "private" || tokText == "public" || tokText == "class" {
+		if tokText == "private" || tokText == "public" || tokText == "protected" || tokText == "virtual" || tokText == "class" {
 			return ClassRelated
 		}
 		if r, _ := utf8.DecodeRuneInString(tokText); unicode.IsUpper(r) {
