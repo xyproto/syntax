@@ -171,6 +171,7 @@ var Keywords = map[string]struct{}{
 	"use":              {},
 	"using":            {},
 	"var":              {},
+	"virtual":          {},
 	"void":             {},
 	"volatile":         {},
 	"wantarray":        {},

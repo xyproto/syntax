@@ -34,7 +34,10 @@ const (
 	Decimal
 	AndOr
 	Star
-	ClassRelated
+	Class
+	Private
+	Public
+	Protected
 )
 
 //go:generate gostringer -type=Kind
@@ -63,15 +66,18 @@ type TextConfig struct {
 	AndOr         string
 	Star          string
 	Whitespace    string
-	ClassRelated  string
+	Class         string
+	Private       string
+	Public        string
+	Protected     string
 }
 
 // TextPrinter implements Printer interface and is used to produce
 // Text-based highligher
 type TextPrinter TextConfig
 
-// Class returns the set class for a given token Kind.
-func (c TextConfig) Class(kind Kind) string {
+// GetClass returns the set class for a given token Kind.
+func (c TextConfig) GetClass(kind Kind) string {
 	switch kind {
 	case String:
 		return c.String
@@ -101,8 +107,14 @@ func (c TextConfig) Class(kind Kind) string {
 		return c.AndOr
 	case Star:
 		return c.Star
-	case ClassRelated:
-		return c.ClassRelated
+	case Class:
+		return c.Class
+	case Public:
+		return c.Public
+	case Private:
+		return c.Private
+	case Protected:
+		return c.Protected
 	}
 	return ""
 }
@@ -110,7 +122,7 @@ func (c TextConfig) Class(kind Kind) string {
 // Print is the function that emits highlighted source code using
 // <color>...<off> wrapper tags
 func (p TextPrinter) Print(w io.Writer, kind Kind, tokText string) error {
-	class := ((TextConfig)(p)).Class(kind)
+	class := ((TextConfig)(p)).GetClass(kind)
 	if class != "" {
 		_, err := w.Write([]byte(`<`))
 		if err != nil {
@@ -142,7 +154,7 @@ type Annotator interface {
 type TextAnnotator TextConfig
 
 func (a TextAnnotator) Annotate(start int, kind Kind, tokText string) (*annotate.Annotation, error) {
-	class := ((TextConfig)(a)).Class(kind)
+	class := ((TextConfig)(a)).GetClass(kind)
 	if class != "" {
 		left := []byte(`<`)
 		left = append(left, []byte(class)...)
@@ -177,7 +189,10 @@ var DefaultTextConfig = TextConfig{
 	AndOr:         "red",
 	Star:          "white",
 	Whitespace:    "",
-	ClassRelated:  "white",
+	Class:         "white",
+	Private:       "red",
+	Public:        "red",
+	Protected:     "red",
 }
 
 func Print(s *scanner.Scanner, w io.Writer, p Printer) error {
@@ -275,8 +290,15 @@ func tokenKind(tok rune, tokText string, inSingleLineComment *bool) Kind {
 		if _, isKW := Keywords[tokText]; isKW {
 			return Keyword
 		}
-		if tokText == "private" || tokText == "public" || tokText == "protected" || tokText == "virtual" || tokText == "class" {
-			return ClassRelated
+		switch tokText {
+		case "private":
+			return Private
+		case "public":
+			return Public
+		case "protected":
+			return Protected
+		case "class":
+			return Class
 		}
 		if r, _ := utf8.DecodeRuneInString(tokText); unicode.IsUpper(r) {
 			return Type
