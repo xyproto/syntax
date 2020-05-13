@@ -25,7 +25,7 @@ func main() {
 		o.ErrExit(err.Error())
 	}
 
-	text, err := syntax.AsText(input)
+	text, err := syntax.AsText(input, false)
 	if err != nil {
 		o.ErrExit(err.Error())
 	}
