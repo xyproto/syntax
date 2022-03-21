@@ -41,6 +41,7 @@ const (
 	Protected
 	Dollar
 	AssemblyEnd
+	Mut
 )
 
 //go:generate gostringer -type=Kind
@@ -75,6 +76,7 @@ type TextConfig struct {
 	Public        string
 	Protected     string
 	AssemblyEnd   string
+	Mut           string
 }
 
 // TextPrinter implements Printer interface and is used to produce
@@ -124,6 +126,8 @@ func (c TextConfig) GetClass(kind Kind) string {
 		return c.Protected
 	case AssemblyEnd:
 		return c.AssemblyEnd
+	case Mut:
+		return c.Mut
 	}
 	return ""
 }
@@ -204,6 +208,7 @@ var DefaultTextConfig = TextConfig{
 	Public:        "red",
 	Protected:     "red",
 	AssemblyEnd:   "lightyellow",
+	Mut:           "magenta",
 }
 
 func Print(s *scanner.Scanner, w io.Writer, p Printer, m mode.Mode) error {
@@ -304,7 +309,7 @@ func tokenKind(tok rune, tokText string, inSingleLineComment *bool, m mode.Mode)
 		case "as":
 			return Type // re-use color
 		case "mut":
-			return Protected // re-use color
+			return Mut
 		}
 	}
 
