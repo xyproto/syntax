@@ -294,11 +294,13 @@ func tokenKind(tok rune, tokText string, inSingleLineComment *bool, m mode.Mode)
 	if *inSingleLineComment {
 		return Comment
 	}
-	// Check if this is the "as" keyword, for Rust
-	if m == mode.Rust && (tokText == "as" || tok == '<' || tok == '>') {
-		// Return the "star" kind
+	// Check if this is the "as" keyword, '<' or '>', for Rust
+	if m == mode.Rust && tokText == "as" {
+		return Plaintext
+	} else if m == mode.Rust && (tok == '<' || tok == '>') {
 		return Star
 	}
+
 	// If not, do the regular switch
 	switch tok {
 	case scanner.Ident:
