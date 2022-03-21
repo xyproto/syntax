@@ -298,11 +298,14 @@ func tokenKind(tok rune, tokText string, inSingleLineComment *bool, m mode.Mode)
 		return Comment
 	}
 
-	// Check if this is the "as" keyword, "mut" keyword, '<' or '>', for Rust
-	if m == mode.Rust && (tokText == "as" || tokText == "mut") {
-		return Type // re-use color
-	} else if m == mode.Rust && (tok == '<' || tok == '>') {
-		return Protected // re-use color
+	// Check if this is the "as" or "mut" keyword, for Rust
+	if m == mode.Rust {
+		switch tokText {
+		case "as":
+			return Type // re-use color
+		case "mut":
+			return Protected // re-use color
+		}
 	}
 
 	// If not, do the regular switch
