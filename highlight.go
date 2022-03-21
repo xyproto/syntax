@@ -313,7 +313,7 @@ func tokenKind(tok rune, tokText string, inSingleLineComment *bool, m mode.Mode)
 			if m == mode.Assembly || m == mode.GoAssembly {
 				return AssemblyEnd
 			}
-		case "<<", ">>", "as":
+		case "as":
 			if m == mode.Rust {
 				return AndOr
 			}
@@ -335,6 +335,9 @@ func tokenKind(tok rune, tokText string, inSingleLineComment *bool, m mode.Mode)
 		return Star
 	} else if tok == '$' {
 		return Dollar
+	} else if m == mode.Rust && (tok == '<' || tok == '>') {
+		// Special case for Rust
+		return AndOr
 	}
 	if unicode.IsSpace(tok) {
 		return Whitespace
