@@ -279,26 +279,30 @@ func NewScannerReader(src io.Reader) *scanner.Scanner {
 }
 
 func tokenKind(tok rune, tokText string, inSingleLineComment *bool, m mode.Mode) Kind {
+
 	// Check if we are in a bash-style single line comment
 	if (m == mode.Assembly && tok == ';') || (m != mode.Assembly && m != mode.GoAssembly && m != mode.Clojure && m != mode.Lisp && m != mode.C && m != mode.Cpp && tok == '#') {
 		*inSingleLineComment = true
 	} else if tok == '\n' {
 		*inSingleLineComment = false
 	}
+
 	// Check if this is #include or #define
 	if (m == mode.C || m == mode.Cpp) && (tokText == "include" || tokText == "define" || tokText == "ifdef" || tokText == "ifndef" || tokText == "endif" || tokText == "else") {
 		*inSingleLineComment = false
 		return Keyword
 	}
+
 	// If we are, return the Comment kind
 	if *inSingleLineComment {
 		return Comment
 	}
-	// Check if this is the "as" keyword, '<' or '>', for Rust
-	if m == mode.Rust && tokText == "as" {
+
+	// Check if this is the "as" keyword, "mut" keyword, '<' or '>', for Rust
+	if m == mode.Rust && (tokText == "as" || tokText == "mut") {
 		return Type // re-use color
 	} else if m == mode.Rust && (tok == '<' || tok == '>') {
-		return AndOr // re-use color
+		return Protected // re-use color
 	}
 
 	// If not, do the regular switch
