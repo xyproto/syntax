@@ -296,9 +296,9 @@ func tokenKind(tok rune, tokText string, inSingleLineComment *bool, m mode.Mode)
 	}
 	// Check if this is the "as" keyword, '<' or '>', for Rust
 	if m == mode.Rust && tokText == "as" {
-		return Protected // re-use color
-	} else if m == mode.Rust && (tokText == "<<" || tokText == ">>" || tokText == ">=") {
-		return Dollar // re-use color
+		return Type // re-use color
+	} else if m == mode.Rust && (tok == '<' || tok == '>') {
+		return AndOr // re-use color
 	}
 
 	// If not, do the regular switch
