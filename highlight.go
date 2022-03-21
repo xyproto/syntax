@@ -313,6 +313,10 @@ func tokenKind(tok rune, tokText string, inSingleLineComment *bool, m mode.Mode)
 			if m == mode.Assembly || m == mode.GoAssembly {
 				return AssemblyEnd
 			}
+		case "<<", ">>", "as":
+			if m == mode.Rust {
+				return AndOr
+			}
 		}
 		if r, _ := utf8.DecodeRuneInString(tokText); unicode.IsUpper(r) {
 			return Type
