@@ -294,6 +294,11 @@ func tokenKind(tok rune, tokText string, inSingleLineComment *bool, m mode.Mode)
 	if *inSingleLineComment {
 		return Comment
 	}
+	// Check if this is the "as" keyword, for Rust
+	if m == mode.Rust && (tokText == "as" || tok == '<' || tok == '>') {
+		// Return the "star" kind
+		return Star
+	}
 	// If not, do the regular switch
 	switch tok {
 	case scanner.Ident:
@@ -313,10 +318,6 @@ func tokenKind(tok rune, tokText string, inSingleLineComment *bool, m mode.Mode)
 			if m == mode.Assembly || m == mode.GoAssembly {
 				return AssemblyEnd
 			}
-		case "as":
-			if m == mode.Rust {
-				return AndOr
-			}
 		}
 		if r, _ := utf8.DecodeRuneInString(tokText); unicode.IsUpper(r) {
 			return Type
@@ -335,9 +336,6 @@ func tokenKind(tok rune, tokText string, inSingleLineComment *bool, m mode.Mode)
 		return Star
 	} else if tok == '$' {
 		return Dollar
-	} else if m == mode.Rust && (tok == '<' || tok == '>') {
-		// Special case for Rust
-		return AndOr
 	}
 	if unicode.IsSpace(tok) {
 		return Whitespace
