@@ -6,7 +6,7 @@ github.com/pkg/term/termios
 github.com/sourcegraph/annotate
 # github.com/xyproto/benchmarked v0.3.0
 github.com/xyproto/benchmarked
-# github.com/xyproto/mode v0.4.0
+# github.com/xyproto/mode v0.4.1
 ## explicit
 github.com/xyproto/mode
 # github.com/xyproto/textoutput v1.12.0
