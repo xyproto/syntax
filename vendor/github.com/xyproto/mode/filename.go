@@ -42,6 +42,8 @@ func Detect(filename string) Mode {
 		mode = Bazel
 	case baseFilename == "CMakeLists.txt" || ext == ".cmake":
 		mode = CMake
+	case strings.HasPrefix(baseFilename, "man.") && len(ext) > 4: // ex: /tmp/man.0asdfadf
+		mode = ManPage
 	default:
 		switch ext {
 		case ".s", ".S", ".asm", ".inc":
@@ -55,6 +57,10 @@ func Detect(filename string) Mode {
 			mode = Go
 		case ".odin":
 			mode = Odin
+		case ".ha":
+			mode = Hare
+		case ".jakt":
+			mode = Jakt
 		case ".hs", ".hts":
 			mode = Haskell
 		case ".agda":
