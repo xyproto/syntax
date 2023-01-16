@@ -308,10 +308,6 @@ func tokenKind(tok rune, tokText string, inSingleLineComment *bool, m mode.Mode)
 		return Keyword
 	}
 
-	if (m == mode.Shell && tok == '/') {
-		*inSingleLineComment = false
-	}
-
 	// If we are, return the Comment kind
 	if *inSingleLineComment {
 		return Comment
