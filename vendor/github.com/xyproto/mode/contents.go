@@ -2,6 +2,7 @@ package mode
 
 import (
 	"bytes"
+	"strconv"
 	"strings"
 )
 
@@ -11,8 +12,8 @@ func SimpleDetect(contents string) Mode {
 	if strings.Contains(contents, "\n") {
 		firstLine = strings.SplitN(contents, "\n", 2)[0]
 	}
-	if len(firstLine) > 255 { // just look at the first 255, if it's one long line
-		firstLine = firstLine[:255]
+	if len(firstLine) > 512 { // just look at the first 512, if it's one long line
+		firstLine = firstLine[:512]
 	}
 	if m, found := DetectFromContents(Blank, firstLine, func() string { return contents }); found {
 		return m
@@ -22,13 +23,13 @@ func SimpleDetect(contents string) Mode {
 
 // SimpleDetectBytes tries to return a Mode given a byte slice of file contents
 func SimpleDetectBytes(contents []byte) Mode {
-	var nl = []byte("\n")
+	nl := []byte("\n")
 	firstLine := contents
 	if bytes.Contains(contents, nl) {
 		firstLine = bytes.SplitN(contents, nl, 2)[0]
 	}
-	if len(firstLine) > 255 { // just look at the first 255, if it's one long line
-		firstLine = firstLine[:255]
+	if len(firstLine) > 512 { // just look at the first 255, if it's one long line
+		firstLine = firstLine[:512]
 	}
 	if m, found := DetectFromContentBytes(Blank, firstLine, func() []byte { return contents }); found {
 		return m
@@ -71,8 +72,6 @@ func DetectFromContents(initial Mode, firstLine string, allTextFunc func() strin
 		return XML, true
 	} else if strings.Contains(firstLine, "-*- nroff -*-") {
 		return Nroff, true
-	} else if !strings.HasPrefix(firstLine, "//") && !strings.HasPrefix(firstLine, "#") && strings.Count(strings.TrimSpace(firstLine), " ") > 10 && strings.HasSuffix(firstLine, ")") {
-		return ManPage, true
 	} else if strings.HasPrefix(firstLine, "From ") && strings.HasSuffix(firstLine, "# This line is ignored.") {
 		return Email, true
 	} else if strings.HasPrefix(firstLine, "\" ") {
@@ -80,13 +79,25 @@ func DetectFromContents(initial Mode, firstLine string, allTextFunc func() strin
 		return Vim, true
 	}
 	// Man page detection (two equal words at the start and end of the line, and both have "(" and ")")
+	// Also, the line does not start with a number and does not contain "//"
+	if !strings.Contains(firstLine, "//") && !strings.HasPrefix(firstLine, "#") && strings.Count(strings.TrimSpace(firstLine), " ") > 10 && strings.HasSuffix(firstLine, ")") {
+		fields := strings.Fields(strings.TrimSpace(firstLine))
+		if len(fields) > 2 {
+			firstWord := fields[0]
+			if _, err := strconv.Atoi(firstWord); err != nil { // the first word is not a number
+				return ManPage, true
+			}
+		}
+	}
 	if m == Blank {
 		fields := strings.Fields(strings.TrimSpace(firstLine))
 		if len(fields) > 2 {
 			firstWord := fields[0]
 			lastWord := fields[len(fields)-1]
 			if firstWord == lastWord && strings.Count(firstWord, "(") == 1 && strings.Count(firstWord, ")") == 1 {
-				return ManPage, true
+				if _, err := strconv.Atoi(firstWord); err != nil { // the first word is not a number
+					return ManPage, true
+				}
 			}
 		}
 	}

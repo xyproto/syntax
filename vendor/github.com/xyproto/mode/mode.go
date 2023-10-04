@@ -1,3 +1,4 @@
+// package mode tries to find the correct editor mode, given a filename and/or file data
 package mode
 
 // Mode is a per-filetype mode, like for Markdown
@@ -8,7 +9,10 @@ const (
 	AIDL                  // Android-related: Android Interface Definition Language
 	Ada                   // Ada
 	Agda                  // Agda
+	Algol68               // ALGOL 68
 	Amber                 // Amber templates
+	Arduino               // Arduino
+	ASCIIDoc              // ASCII doc
 	Assembly              // Assembly
 	Basic                 // FreeBasic, Gambas 3
 	Bat                   // DOS and Windows batch files
@@ -22,10 +26,14 @@ const (
 	Cpp                   // C++
 	Crystal               // Crystal
 	D                     // D
-	Doc                   // asciidoctor, sdoc etc
+	Dart                  // Dart
+	Docker                // For Dockerfiles
 	Email                 // For using o with ie. Mutt
 	Elm                   // Elm
 	Erlang                // Erlang
+	Fortran77             // Fortran 77
+	Fortran90             // Fortran 90
+	FSharp                // F#
 	Garnet                // Garnet
 	GDScript              // Godot Script
 	Git                   // Git commits and interactive rebases
@@ -35,6 +43,7 @@ const (
 	Haxe                  // Haxe: .hx and .hxml files
 	HIDL                  // Android-related: Hardware Abstraction Layer Interface Definition Language
 	HTML                  // HTML
+	HTTP                  // .http files are used by IntelliJ and Visual Studio for testing HTTP services
 	Hare                  // Hare
 	Haskell               // Haskell
 	Ivy                   // Ivy
@@ -42,21 +51,25 @@ const (
 	Jakt                  // Jakt
 	Java                  // Java
 	JavaScript            // JavaScript
+	Just                  // Just
 	Koka                  // Koka
 	Kotlin                // Kotlin
+	Lilypond              // Lilypond
 	Lisp                  // Common Lisp and Emacs Lisp
 	Log                   // All sorts of log files
 	Lua                   // Lua
 	M4                    // M4 macros
 	Make                  // Makefiles
 	ManPage               // viewing man pages
-	Markdown              // Markdown
+	Markdown              // Markdown document
+	Mojo                  // Mojo
 	Nim                   // Nim
 	Nroff                 // editing man pages
 	OCaml                 // OCaml
 	Oak                   // Oak
 	ObjectPascal          // Object Pascal and Delphi
 	Odin                  // Odin
+	Ollama                // For Modelfiles
 	Perl                  // Perl
 	PolicyLanguage        // SE Linux configuration files
 	Prolog                // Prolog
@@ -65,10 +78,12 @@ const (
 	ReStructured          // reStructuredText
 	Rust                  // Rust
 	Scala                 // Scala
+	SCDoc                 // SC Doc
 	Shader                // GLSL Shader
 	Shell                 // Shell scripts and PKGBUILD files
 	StandardML            // Standard ML
 	SQL                   // Structured Query Language
+	Subversion            // Subversion commits
 	Teal                  // Teal
 	Terra                 // Terra
 	Text                  // plain text documents
@@ -88,10 +103,16 @@ func (mode Mode) String() string {
 		return "Ada"
 	case Agda:
 		return "Agda"
+	case Algol68:
+		return "ALGOL 68"
 	case AIDL:
 		return "AIDL"
 	case Amber:
 		return "Amber"
+	case Arduino:
+		return "Arduino"
+	case ASCIIDoc:
+		return "ASCII Doc"
 	case Assembly:
 		return "Assembly"
 	case Basic:
@@ -118,16 +139,24 @@ func (mode Mode) String() string {
 		return "Crystal"
 	case CS:
 		return "C#"
-	case Doc:
-		return "Document"
 	case D:
 		return "D"
+	case Dart:
+		return "Dart"
+	case Docker:
+		return "Docker"
 	case Elm:
 		return "Elm"
 	case Email:
 		return "E-mail"
 	case Erlang:
 		return "Erlang"
+	case Fortran77:
+		return "Fortran 77"
+	case Fortran90:
+		return "Fortran 90"
+	case FSharp:
+		return "F#"
 	case Garnet:
 		return "Garnet"
 	case GDScript:
@@ -150,6 +179,8 @@ func (mode Mode) String() string {
 		return "HIDL"
 	case HTML:
 		return "HTML"
+	case HTTP:
+		return "HTTP Tests"
 	case Ivy:
 		return "Ivy"
 	case Jakt:
@@ -160,10 +191,14 @@ func (mode Mode) String() string {
 		return "JavaScript"
 	case JSON:
 		return "JSON"
+	case Just:
+		return "Just"
 	case Koka:
 		return "Koka"
 	case Kotlin:
 		return "Kotlin"
+	case Lilypond:
+		return "Lilypond"
 	case Lisp:
 		return "Lisp"
 	case Log:
@@ -178,12 +213,16 @@ func (mode Mode) String() string {
 		return "Man"
 	case Markdown:
 		return "Markdown"
+	case Mojo:
+		return "Mojo"
 	case Nim:
 		return "Nim"
 	case Nroff:
 		return "Nroff"
 	case Oak:
 		return "Oak"
+	case Ollama:
+		return "Ollama"
 	case ObjectPascal:
 		return "Pas"
 	case OCaml:
@@ -206,6 +245,8 @@ func (mode Mode) String() string {
 		return "Rust"
 	case Scala:
 		return "Scala"
+	case SCDoc:
+		return "SCDoc"
 	case Shader:
 		return "Shader"
 	case Shell:
@@ -214,6 +255,8 @@ func (mode Mode) String() string {
 		return "SQL"
 	case StandardML:
 		return "Standard ML"
+	case Subversion:
+		return "Subversion"
 	case Teal:
 		return "Teal"
 	case Terra:

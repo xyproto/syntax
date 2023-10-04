@@ -15,12 +15,13 @@ var DefaultTabsSpaces = TabsSpaces{4, true}
 
 var languageIndentation = map[TabsSpaces][]Mode{
 	// Languages that use spaces (from the opinionated point of view of this package)
-	{2, true}: {Agda, Amber, Assembly, Clojure, Config, Erlang, HTML, Haskell, JSON, Koka, Lua, ObjectPascal, Perl, PolicyLanguage, ReStructured, Shell, StandardML, Teal, Vim, Vim, XML},
+	{2, true}: {Agda, Algol68, Amber, Arduino, Assembly, Clojure, Config, Dart, Erlang, Fortran90, HTML, Haskell, JSON, Koka, Lilypond, Lua, ObjectPascal, Perl, PolicyLanguage, ReStructured, Scala, Shell, StandardML, Teal, Vim, Vim, XML},
 	{3, true}: {Ada, Prolog}, // Ada and Prolog are special
-	{4, true}: {Bat, Basic, Battlestar, CMake, CS, Cpp, Crystal, Doc, Elm, Email, Garnet, GDScript, Git, Haxe, JSON, Jakt, Java, JavaScript, Kotlin, Markdown, Nim, Oak, Python, R, SQL, Scala, Terra, Text, TypeScript, V, Zig},
+	{4, true}: {ASCIIDoc, Basic, Bat, Battlestar, CMake, CS, Cpp, Crystal, Docker, Elm, Email, FSharp, GDScript, Garnet, Git, Haxe, JSON, Jakt, Java, JavaScript, Kotlin, Markdown, Mojo, Nim, Oak, Ollama, Python, R, SCDoc, SQL, Subversion, Terra, Text, TypeScript, V, Zig},
+	{7, true}: {Fortran77}, // Fortran77 is weird
+	{8, true}: {Hare, Ivy}, // Hare and Ivy are special
 	// Languages that use tabs (from the opinionated point of view of this package)
-	{4, false}: {AIDL, C, Go, GoAssembly, HIDL, Lisp, M4, Make, ManPage, Nroff, OCaml, Odin, Rust, Shader}, // Tabs
-	{8, true}:  {Hare, Ivy},                                                                                // Hare and Ivy are special
+	{4, false}: {AIDL, C, Go, GoAssembly, HIDL, Just, Lisp, M4, Make, ManPage, Nroff, OCaml, Odin, Rust, Shader}, // Tabs
 }
 
 // Spaces returns true if spaces should be used for the current mode
