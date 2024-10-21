@@ -6,6 +6,16 @@ import (
 	"strings"
 )
 
+// hasS checks if the given string slice contains the given string
+func hasS(sl []string, s string) bool {
+	for _, e := range sl {
+		if e == s {
+			return true
+		}
+	}
+	return false
+}
+
 // Detect looks at the filename and tries to guess what could be an appropriate editor mode.
 func Detect(filename string) Mode {
 	// A list of the most common configuration filenames that does not have an extension
@@ -41,12 +51,14 @@ func Detect(filename string) Mode {
 	case ext == ".just" || ext == ".justfile" || baseFilename == "justfile":
 		// NOTE: This one MUST come before the ext == "" check below!
 		mode = Just
-	case strings.HasSuffix(filename, ".git/config") || ext == ".ini" || ext == ".cfg" || ext == ".conf" || ext == ".service" || ext == ".target" || ext == ".socket" || strings.HasPrefix(ext, "rc"):
+	case strings.HasSuffix(filename, ".git/config") || ext == ".cfg" || ext == ".conf" || ext == ".service" || ext == ".target" || ext == ".socket" || strings.HasPrefix(ext, "rc"):
 		fallthrough
-	case ext == ".yml" || ext == ".toml" || ext == ".ini" || ext == ".bp" || ext == ".rule" || strings.HasSuffix(filename, ".git/config") || (ext == "" && (strings.HasSuffix(baseFilename, "file") || strings.HasSuffix(baseFilename, "rc") || hasS(configFilenames, baseFilename))):
+	case ext == ".yml" || ext == ".toml" || ext == ".bp" || ext == ".rule" || strings.HasSuffix(filename, ".git/config") || (ext == "" && (strings.HasSuffix(baseFilename, "file") || strings.HasSuffix(baseFilename, "rc") || hasS(configFilenames, baseFilename))):
 		mode = Config
-	case ext == ".sh" || ext == ".install" || ext == ".ksh" || ext == ".tcsh" || ext == ".bash" || ext == ".zsh" || ext == ".local" || ext == ".profile" || baseFilename == "PKGBUILD" || baseFilename == "APKBUILD" || (strings.HasPrefix(baseFilename, ".") && strings.Contains(baseFilename, "sh")): // This last part covers .bashrc, .zshrc etc
+	case ext == ".sh" || ext == ".fish" || ext == ".install" || ext == ".ksh" || ext == ".tcsh" || ext == ".bash" || ext == ".zsh" || ext == ".local" || ext == ".profile" || baseFilename == "PKGBUILD" || baseFilename == "APKBUILD" || (strings.HasPrefix(baseFilename, ".") && strings.Contains(baseFilename, "sh")): // This last part covers .bashrc, .zshrc etc
 		mode = Shell
+	case baseFilename == ".gitignore" || baseFilename == ".ignore":
+		mode = Ignore
 	case ext == ".bzl" || baseFilename == "BUILD" || baseFilename == "WORKSPACE":
 		mode = Bazel
 	case baseFilename == "CMakeLists.txt" || ext == ".cmake":
@@ -82,8 +94,9 @@ func Detect(filename string) Mode {
 		case ".bts":
 			mode = Battlestar
 		case ".c":
-			// C mode
 			mode = C
+		case ".c3":
+			mode = C3
 		case ".cm":
 			// Standard ML project file
 			mode = StandardML
@@ -94,6 +107,10 @@ func Detect(filename string) Mode {
 			mode = Clojure
 		case ".cs": // C#
 			mode = CS
+		case ".css":
+			mode = CSS
+		case ".csproj": // C# projects
+			mode = XML
 		case ".cl", ".el", ".elisp", ".emacs", ".l", ".lisp", ".lsp":
 			mode = Lisp
 		case ".cr":
@@ -134,15 +151,19 @@ func Detect(filename string) Mode {
 			mode = HTML
 		case ".hx", ".hxml":
 			mode = Haxe
+		case ".ini":
+			mode = Ini
 		case ".ino":
 			mode = Arduino
+		case ".inko":
+			mode = Inko
 		case ".ivy":
 			mode = Ivy
 		case ".jakt":
 			mode = Jakt
 		case ".java":
 			mode = Java
-		case ".js":
+		case ".js", ".jsx":
 			mode = JavaScript
 		case ".json", ".ipynb":
 			mode = JSON
@@ -156,6 +177,8 @@ func Detect(filename string) Mode {
 			mode = Lua
 		case ".ly":
 			mode = Lilypond
+		case ".m":
+			mode = ObjC
 		case ".m4":
 			mode = M4
 		case ".md":
@@ -163,14 +186,20 @@ func Detect(filename string) Mode {
 			mode = Markdown
 		case ".ml":
 			mode = OCaml // or standard ML, if the file does not contain ";;"
+		case ".mod":
+			mode = GoMod // go.mod files
 		case ".nim":
 			mode = Nim
+		case ".nse":
+			mode = Nmap
 		case ".odin":
 			mode = Odin
 		case ".ok":
 			mode = Oak
 		case ".pas", ".pp", ".lpr":
 			mode = ObjectPascal
+		case ".php", ".php3", ".php4", ".php5", ".phtml":
+			mode = PHP
 		case ".pl", ".pro":
 			mode = Prolog
 		case ".py":
@@ -179,6 +208,10 @@ func Detect(filename string) Mode {
 			mode = Mojo
 		case ".r":
 			mode = R
+		case ".rb":
+			mode = Ruby
+		case ".razor":
+			mode = XML
 		case ".rs":
 			mode = Rust
 		case ".rst":
@@ -188,6 +221,10 @@ func Detect(filename string) Mode {
 			mode = Assembly
 		case ".scala":
 			mode = Scala
+		case ".rkt", ".sc", ".sch", ".scm", ".scr", ".scrbl", ".sld", ".sls", ".sps", ".sps7", ".ss":
+			mode = Scheme
+		case ".swift":
+			mode = Swift
 		case ".fun", ".sml":
 			mode = StandardML
 		case ".sql":

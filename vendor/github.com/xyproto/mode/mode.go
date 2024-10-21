@@ -19,8 +19,10 @@ const (
 	Battlestar            // Battlestar
 	Bazel                 // Bazel and Starlark
 	C                     // C
+	C3                    // C3
 	CMake                 // CMake files
 	CS                    // C#
+	CSS                   // CSS
 	Clojure               // Clojure
 	Config                // Config like yaml, yml, toml, and ini files
 	Cpp                   // C++
@@ -38,6 +40,7 @@ const (
 	GDScript              // Godot Script
 	Git                   // Git commits and interactive rebases
 	Go                    // Go
+	GoMod                 // go.mod files
 	GoAssembly            // Go-style Assembly
 	Gradle                // Gradle
 	Haxe                  // Haxe: .hx and .hxml files
@@ -46,6 +49,9 @@ const (
 	HTTP                  // .http files are used by IntelliJ and Visual Studio for testing HTTP services
 	Hare                  // Hare
 	Haskell               // Haskell
+	Ignore                // .gitignore and .ignore files
+	Ini                   // INI Configuration
+	Inko                  // Inko
 	Ivy                   // Ivy
 	JSON                  // JSON and iPython notebooks
 	Jakt                  // Jakt
@@ -64,26 +70,32 @@ const (
 	Markdown              // Markdown document
 	Mojo                  // Mojo
 	Nim                   // Nim
+	Nmap                  // Nmap scripts
 	Nroff                 // editing man pages
 	OCaml                 // OCaml
 	Oak                   // Oak
+	ObjC                  // Objective-C
 	ObjectPascal          // Object Pascal and Delphi
 	Odin                  // Odin
 	Ollama                // For Modelfiles
 	Perl                  // Perl
+	PHP                   // PHP
 	PolicyLanguage        // SE Linux configuration files
 	Prolog                // Prolog
 	Python                // Python
 	R                     // R
 	ReStructured          // reStructuredText
+	Ruby                  // Ruby
 	Rust                  // Rust
 	Scala                 // Scala
 	SCDoc                 // SC Doc
+	Scheme                // Scheme
 	Shader                // GLSL Shader
 	Shell                 // Shell scripts and PKGBUILD files
 	StandardML            // Standard ML
 	SQL                   // Structured Query Language
 	Subversion            // Subversion commits
+	Swift                 // Swift
 	Teal                  // Teal
 	Terra                 // Terra
 	Text                  // plain text documents
@@ -125,6 +137,10 @@ func (mode Mode) String() string {
 		return "Bazel"
 	case Blank:
 		return "-"
+	case C:
+		return "C"
+	case C3:
+		return "C3"
 	case Clojure:
 		return "Clojure"
 	case CMake:
@@ -133,12 +149,12 @@ func (mode Mode) String() string {
 		return "Configuration"
 	case Cpp:
 		return "C++"
-	case C:
-		return "C"
 	case Crystal:
 		return "Crystal"
 	case CS:
 		return "C#"
+	case CSS:
+		return "CSS"
 	case D:
 		return "D"
 	case Dart:
@@ -167,6 +183,8 @@ func (mode Mode) String() string {
 		return "Go-style Assembly"
 	case Go:
 		return "Go"
+	case GoMod:
+		return "Go Module"
 	case Gradle:
 		return "Gradle"
 	case Hare:
@@ -181,6 +199,12 @@ func (mode Mode) String() string {
 		return "HTML"
 	case HTTP:
 		return "HTTP Tests"
+	case Ignore:
+		return "Ignore"
+	case Ini:
+		return "INI Configuration"
+	case Inko:
+		return "Inko"
 	case Ivy:
 		return "Ivy"
 	case Jakt:
@@ -217,10 +241,14 @@ func (mode Mode) String() string {
 		return "Mojo"
 	case Nim:
 		return "Nim"
+	case Nmap:
+		return "Nmap"
 	case Nroff:
 		return "Nroff"
 	case Oak:
 		return "Oak"
+	case ObjC:
+		return "Objective-C"
 	case Ollama:
 		return "Ollama"
 	case ObjectPascal:
@@ -231,6 +259,8 @@ func (mode Mode) String() string {
 		return "Odin"
 	case Perl:
 		return "Perl"
+	case PHP:
+		return "PHP"
 	case PolicyLanguage:
 		return "SELinux"
 	case Prolog:
@@ -241,12 +271,16 @@ func (mode Mode) String() string {
 		return "R"
 	case ReStructured:
 		return "reStructuredText"
+	case Ruby:
+		return "Ruby"
 	case Rust:
 		return "Rust"
 	case Scala:
 		return "Scala"
 	case SCDoc:
 		return "SCDoc"
+	case Scheme:
+		return "Scheme"
 	case Shader:
 		return "Shader"
 	case Shell:
@@ -257,6 +291,8 @@ func (mode Mode) String() string {
 		return "Standard ML"
 	case Subversion:
 		return "Subversion"
+	case Swift:
+		return "Swift"
 	case Teal:
 		return "Teal"
 	case Terra:
