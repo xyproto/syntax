@@ -3,6 +3,8 @@ package mode
 import (
 	"bytes"
 	"strings"
+
+	"github.com/xyproto/lookslikegoasm"
 )
 
 // SimpleDetectBytes tries to return a Mode given a byte slice of file contents
@@ -35,6 +37,13 @@ func SimpleDetect(contents string) Mode {
 func DetectFromContentBytes(initial Mode, firstLine []byte, allBytesFunc func() []byte) (Mode, bool) {
 	var found, notConfig bool
 	m := initial
+	if m == Assembly || m == Blank {
+		// Go/Plan9 style Assembly
+		data := bytes.TrimSpace(allBytesFunc())
+		if bytes.Contains(data, []byte("·")) || (bytes.Contains(data, []byte("TEXT")) && bytes.Contains(data, []byte("RET\n"))) {
+			return GoAssembly, true
+		}
+	}
 	if bytes.HasPrefix(firstLine, []byte("#!")) { // The line starts with a shebang
 		words := bytes.Split(firstLine, []byte(" "))
 		lastWord := words[len(words)-1]
@@ -114,22 +123,25 @@ func DetectFromContentBytes(initial Mode, firstLine []byte, allBytesFunc func() 
 			return Config, true
 		}
 	}
-	// If the mode is modeOCaml and there are no ";;" strings, switch to Standard ML
-	if m == OCaml {
+	switch m {
+	case OCaml:
+		// If the mode is modeOCaml and there are no ";;" strings, switch to Standard ML
 		if !bytes.Contains(allBytesFunc(), []byte(";;")) {
 			return StandardML, true
 		}
-	} else if m == Assembly {
-		if bytes.Contains(allBytesFunc(), []byte("·")) { // Go-style assembly mid dot
-			return GoAssembly, true
+	case Blank:
+		if !notConfig {
+			// If it's not a config file and the mode is blank, set it to XML if the first character is "<" and the last is ">"
+			// set the mode to modeConfig and enable syntax highlighting.
+			data := bytes.TrimSpace(allBytesFunc())
+			if bytes.HasPrefix(data, []byte{'<'}) && bytes.HasSuffix(data, []byte{'>'}) {
+				return XML, true
+			}
 		}
-	}
-	// If it's not a config file and the mode is blank, set it to XML if the first character is "<" and the last is ">"
-	// set the mode to modeConfig and enable syntax highlighting.
-	if !notConfig && m == Blank {
-		data := bytes.TrimSpace(allBytesFunc())
-		if bytes.HasPrefix(data, []byte{'<'}) && bytes.HasSuffix(data, []byte{'>'}) {
-			return XML, true
+	case Assembly:
+		// Check if it looks like Go/Plan9-style Assembly or not
+		if lookslikegoasm.Consider(string(allBytesFunc())) {
+			return GoAssembly, true
 		}
 	}
 	return m, found
