@@ -6,6 +6,7 @@ type Mode int
 
 const (
 	Blank          = iota // No file mode found
+	ABC                   // ABC music notation
 	AIDL                  // Android-related: Android Interface Definition Language
 	Ada                   // Ada
 	Agda                  // Agda
@@ -22,6 +23,7 @@ const (
 	C3                    // C3
 	CMake                 // CMake files
 	CS                    // C#
+	CSound                // Csound
 	CSS                   // CSS
 	Clojure               // Clojure
 	Config                // Config like yaml, yml, toml, and ini files
@@ -29,6 +31,7 @@ const (
 	Crystal               // Crystal
 	D                     // D
 	Dart                  // Dart
+	Diff                  // Diff / patch
 	Docker                // For Dockerfiles
 	Email                 // For using o with ie. Mutt
 	Elm                   // Elm
@@ -93,6 +96,7 @@ const (
 	Shader                // GLSL Shader
 	Shell                 // Shell scripts and PKGBUILD files
 	StandardML            // Standard ML
+	Starlark              // Starlark
 	SQL                   // Structured Query Language
 	Subversion            // Subversion commits
 	Swift                 // Swift
@@ -111,6 +115,8 @@ func (mode Mode) String() string {
 	// TODO: Sort the cases alphabetically
 	// TODO: Add a test that makes sure every mode has a string
 	switch mode {
+	case ABC:
+		return "ABC"
 	case Ada:
 		return "Ada"
 	case Agda:
@@ -130,7 +136,7 @@ func (mode Mode) String() string {
 	case Basic:
 		return "Basic"
 	case Bat:
-		return "Bat"
+		return "Batch"
 	case Battlestar:
 		return "Battlestar"
 	case Bazel:
@@ -153,12 +159,16 @@ func (mode Mode) String() string {
 		return "Crystal"
 	case CS:
 		return "C#"
+	case CSound:
+		return "Csound"
 	case CSS:
 		return "CSS"
 	case D:
 		return "D"
 	case Dart:
 		return "Dart"
+	case Diff:
+		return "Diff / patch"
 	case Docker:
 		return "Docker"
 	case Elm:
@@ -289,6 +299,8 @@ func (mode Mode) String() string {
 		return "SQL"
 	case StandardML:
 		return "Standard ML"
+	case Starlark:
+		return "Starlark"
 	case Subversion:
 		return "Subversion"
 	case Swift:

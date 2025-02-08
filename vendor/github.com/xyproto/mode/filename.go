@@ -81,6 +81,8 @@ func Detect(filename string) Mode {
 			mode = ASCIIDoc
 		case ".scdoc", ".scd":
 			mode = SCDoc
+		case ".abc":
+			mode = ABC
 		case ".aidl":
 			mode = AIDL
 		case ".agda":
@@ -107,6 +109,8 @@ func Detect(filename string) Mode {
 			mode = Clojure
 		case ".cs": // C#
 			mode = CS
+		case ".csd", ".orc", ".sco":
+			mode = CSound
 		case ".css":
 			mode = CSS
 		case ".csproj": // C# projects
@@ -119,6 +123,8 @@ func Detect(filename string) Mode {
 			mode = D
 		case ".dart":
 			mode = Dart
+		case ".patch", ".diff":
+			mode = Diff
 		case ".elm":
 			mode = Elm
 		case ".eml":
@@ -165,7 +171,7 @@ func Detect(filename string) Mode {
 			mode = Java
 		case ".js", ".jsx":
 			mode = JavaScript
-		case ".json", ".ipynb":
+		case ".ign", ".ipynb", ".json":
 			mode = JSON
 		case ".kk":
 			mode = Koka
@@ -221,6 +227,8 @@ func Detect(filename string) Mode {
 			mode = Assembly
 		case ".scala":
 			mode = Scala
+		case ".star", ".starlark":
+			mode = Starlark
 		case ".rkt", ".sc", ".sch", ".scm", ".scr", ".scrbl", ".sld", ".sls", ".sps", ".sps7", ".ss":
 			mode = Scheme
 		case ".swift":
