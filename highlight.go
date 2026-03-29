@@ -1,9 +1,8 @@
-// Package syntax provides syntax highlighting for source code using the same
-// approach as Orbiton. It tokenizes input via text/scanner, classifies tokens
+// Package syntax provides syntax highlighting for source code, using the same
+// approach as Orbiton. It tokenizes input with text/scanner, classifies tokens
 // into kinds, and wraps them in color tags that can be converted to ANSI escape
-// codes by the vt package.
-//
-// Theme selection is supported via the O_THEME (or THEME) environment variable.
+// codes by the vt package. Theme selection is supported via the O_THEME
+// (or THEME) environment variable.
 package syntax
 
 import (
@@ -16,10 +15,11 @@ import (
 	"github.com/xyproto/mode"
 )
 
-// Kind represents a syntax highlighting kind (class) assigned to tokens.
+// Kind represents a syntax highlighting kind (class) which will be assigned to tokens.
+// A syntax highlighting scheme (style) maps text style properties to each token kind.
 type Kind uint8
 
-// Supported highlighting kinds.
+// Supported highlighting kinds
 const (
 	Whitespace Kind = iota
 	AndOr
@@ -48,7 +48,8 @@ const (
 	Type
 )
 
-// TextConfig maps token kinds to color tag names used by vt.TextOutput.DarkTags.
+// TextConfig holds the Text class configuration to be used by annotators when
+// highlighting code.
 type TextConfig struct {
 	AndOr         string
 	AngleBracket  string
@@ -77,7 +78,7 @@ type TextConfig struct {
 	Whitespace    string
 }
 
-// GetClass returns the color tag name for a given token kind.
+// GetClass returns the set class for a given token Kind.
 func (c TextConfig) GetClass(kind Kind) string {
 	switch kind {
 	case String:
@@ -132,18 +133,22 @@ func (c TextConfig) GetClass(kind Kind) string {
 	return ""
 }
 
-// Option is a function that modifies a TextConfig.
+// Option is a type of the function that can modify
+// one or more of the options in the TextConfig structure.
 type Option func(*TextConfig)
 
-// Printer renders highlighted output.
+// Printer implements an interface to render highlighted output
+// (see TextPrinter for the implementation of this interface).
 type Printer interface {
 	Print(w io.Writer, kind Kind, tokText string) error
 }
 
-// TextPrinter wraps TextConfig to implement Printer, emitting color tags.
+// TextPrinter implements Printer interface and is used to produce
+// Text-based highligher.
 type TextPrinter TextConfig
 
-// Print writes token text wrapped in <color>...<off> tags based on its kind.
+// Print is the function that emits highlighted source code using
+// <color>...<off> wrapper tags.
 func (p TextPrinter) Print(w io.Writer, kind Kind, tokText string) error {
 	class := TextConfig(p).GetClass(kind)
 	if class != "" {
@@ -183,7 +188,8 @@ func (a TextAnnotator) Annotate(start int, kind Kind, tokText string) (*annotate
 	return nil, nil
 }
 
-// DefaultTextConfig provides color names matching Orbiton's default theme.
+// DefaultTextConfig provides class names that match the color names of
+// textoutput tags: https://github.com/xyproto/textoutput
 var DefaultTextConfig = TextConfig{
 	AndOr:         "red",
 	AngleBracket:  "red",
@@ -212,7 +218,7 @@ var DefaultTextConfig = TextConfig{
 	Whitespace:    "",
 }
 
-// Print scans tokens from s and writes highlighted output using Printer p.
+// Print scans tokens from s, using Printer p for mode m.
 func Print(s *scanner.Scanner, w io.Writer, p Printer, m mode.Mode) error {
 	switch m {
 	case mode.C3:
@@ -270,30 +276,31 @@ func Annotate(src []byte, a Annotator, m mode.Mode) (annotate.Annotations, error
 	return anns, nil
 }
 
-// AsText returns src highlighted for mode m, applying options to TextConfig.
+// AsText converts source code into a Text-highlighted version.
+// It accepts optional configuration parameters to control rendering.
 func AsText(src []byte, m mode.Mode, options ...Option) ([]byte, error) {
-	cfg := DefaultTextConfig
-	for _, opt := range options {
-		opt(&cfg)
+	opt := DefaultTextConfig
+	for _, f := range options {
+		f(&opt)
 	}
 	var buf bytes.Buffer
-	if err := Print(NewScanner(src), &buf, TextPrinter(cfg), m); err != nil {
+	if err := Print(NewScanner(src), &buf, TextPrinter(opt), m); err != nil {
 		return nil, err
 	}
 	return buf.Bytes(), nil
 }
 
-// NewScanner returns a scanner.Scanner configured for syntax highlighting.
+// NewScanner is a helper that takes a []byte src, wraps it in a reader and creates a Scanner.
 func NewScanner(src []byte) *scanner.Scanner {
 	return NewScannerReader(bytes.NewReader(src))
 }
 
-// NewScannerReader returns a scanner.Scanner configured for syntax highlighting from r.
-func NewScannerReader(r io.Reader) *scanner.Scanner {
+// NewScannerReader takes a reader src and creates a Scanner.
+func NewScannerReader(src io.Reader) *scanner.Scanner {
 	var s scanner.Scanner
-	s.Init(r)
-	s.Error = func(*scanner.Scanner, string) {}
+	s.Init(src)
+	s.Error = func(_ *scanner.Scanner, _ string) {}
 	s.Whitespace = 0
-	s.Mode ^= scanner.SkipComments
+	s.Mode = s.Mode ^ scanner.SkipComments
 	return &s
 }

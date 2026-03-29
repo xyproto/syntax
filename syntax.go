@@ -11,7 +11,8 @@ import (
 
 // tokenKind determines the Kind of a token for syntax highlighting.
 func tokenKind(tok rune, tokText string, inComment *bool, m mode.Mode) Kind {
-	// Detect single-line comment start/end.
+
+	// Check if we are in a single line comment
 	if (m == mode.Assembly && tok == ';') ||
 		(m != mode.Assembly && m != mode.GoAssembly && m != mode.Clojure && m != mode.Lisp && m != mode.C && m != mode.Cpp && m != mode.Lua && tok == '#') ||
 		((m == mode.ABC || m == mode.Lilypond || m == mode.Perl || m == mode.Prolog) && tok == '%') {
@@ -20,31 +21,33 @@ func tokenKind(tok rune, tokText string, inComment *bool, m mode.Mode) Kind {
 		*inComment = false
 	}
 
-	// C-style preprocessor directives.
+	// Check if this is #include or #define
 	if (m == mode.C || m == mode.Cpp) && (tokText == "include" || tokText == "define" || tokText == "ifdef" || tokText == "ifndef" || tokText == "endif" || tokText == "else" || tokText == "elif") {
 		*inComment = false
 		return Keyword
 	}
 
+	// If we are in a comment, return the Comment kind
 	if *inComment {
 		return Comment
 	}
 
-	// Rust-specific cases.
+	// Check if this is the "as" or "mut" keyword, for Rust
 	if m == mode.Rust {
 		switch tokText {
 		case "as":
-			return Type
+			return Type // re-use color
 		case "mut":
 			return Mut
 		}
 	}
 
-	// Python-specific self.
+	// Check if this is the "self" keyword, for Python
 	if m == mode.Python && tokText == "self" {
 		return Self
 	}
 
+	// If not, do the regular switch
 	switch tok {
 	case scanner.Ident:
 		if _, ok := Keywords[tokText]; ok {
@@ -76,7 +79,7 @@ func tokenKind(tok rune, tokText string, inComment *bool, m mode.Mode) Kind {
 	case scanner.Char, scanner.String, scanner.RawString:
 		return String
 	case scanner.Comment:
-		// In Nix, // is the attribute set update operator, not a comment.
+		// In Nix, // is the attribute set update operator, not a comment
 		if m == mode.Nix && strings.HasPrefix(tokText, "//") {
 			return AndOr
 		}
@@ -105,33 +108,36 @@ func ClearKeywords() {
 	Keywords = make(map[string]struct{})
 }
 
-// AddKeywords adds keywords to the global Keywords map.
+// AddKeywords adds the given keywords so that they will be syntax highlighted.
 func AddKeywords(kws []string) {
 	for _, kw := range kws {
 		Keywords[kw] = struct{}{}
 	}
 }
 
-// AddKeywordsAsUppercase adds uppercased keywords to the global Keywords map.
+// AddKeywordsAsUppercase adds uppercased versions of the given keywords.
 func AddKeywordsAsUppercase(xs []string) {
+	uppercase := make([]string, 0, len(xs))
 	for _, word := range xs {
-		Keywords[strings.ToUpper(word)] = struct{}{}
+		uppercase = append(uppercase, strings.ToUpper(word))
 	}
+	AddKeywords(uppercase)
 }
 
-// RemoveKeywords removes keywords from the global Keywords map.
+// RemoveKeywords removes keywords that should not be syntax highlighted.
 func RemoveKeywords(kws []string) {
 	for _, kw := range kws {
 		delete(Keywords, kw)
 	}
 }
 
-// AddAndRemoveKeywords adds then removes keywords from the global Keywords map.
+// AddAndRemoveKeywords first adds and then removes keywords.
 func AddAndRemoveKeywords(addAndDel ...[]string) {
-	if len(addAndDel) > 0 {
+	l := len(addAndDel)
+	if l > 0 {
 		AddKeywords(addAndDel[0])
 	}
-	if len(addAndDel) > 1 {
+	if l > 1 {
 		RemoveKeywords(addAndDel[1])
 	}
 }
@@ -142,7 +148,7 @@ func SetKeywords(addAndDel ...[]string) {
 	AddAndRemoveKeywords(addAndDel...)
 }
 
-// AdjustKeywords applies per-language keyword adjustments, matching Orbiton's logic.
+// AdjustKeywords contains per-language adjustments to highlighting of keywords
 func AdjustKeywords(m mode.Mode) {
 	switch m {
 	case mode.ABC:

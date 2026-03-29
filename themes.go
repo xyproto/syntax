@@ -4,9 +4,7 @@ import (
 	"github.com/xyproto/env/v2"
 )
 
-// Theme-specific TextConfig constructors. Each returns a TextConfig with the
-// syntax highlighting colors matching the corresponding Orbiton theme.
-
+// NewDefaultTextConfig returns the TextConfig for the default Orbiton theme.
 func NewDefaultTextConfig() TextConfig {
 	return TextConfig{
 		String:        "lightyellow",
@@ -37,6 +35,7 @@ func NewDefaultTextConfig() TextConfig {
 	}
 }
 
+// NewOrbTextConfig returns the TextConfig for the "orb" theme.
 func NewOrbTextConfig() TextConfig {
 	return TextConfig{
 		String:        "cyan",
@@ -67,6 +66,7 @@ func NewOrbTextConfig() TextConfig {
 	}
 }
 
+// NewPinetreeTextConfig returns the TextConfig for the "pinetree" theme.
 func NewPinetreeTextConfig() TextConfig {
 	return TextConfig{
 		String:        "lightgreen",
@@ -97,6 +97,7 @@ func NewPinetreeTextConfig() TextConfig {
 	}
 }
 
+// NewZuluTextConfig returns the TextConfig for the "zulu" theme.
 func NewZuluTextConfig() TextConfig {
 	return TextConfig{
 		String:        "lightyellow",
@@ -127,6 +128,7 @@ func NewZuluTextConfig() TextConfig {
 	}
 }
 
+// NewLitmusTextConfig returns the TextConfig for the "litmus" theme.
 func NewLitmusTextConfig() TextConfig {
 	return TextConfig{
 		String:        "blue",
@@ -157,6 +159,7 @@ func NewLitmusTextConfig() TextConfig {
 	}
 }
 
+// NewSynthwaveTextConfig returns the TextConfig for the "synthwave" theme.
 func NewSynthwaveTextConfig() TextConfig {
 	return TextConfig{
 		String:        "lightgray",
@@ -187,6 +190,7 @@ func NewSynthwaveTextConfig() TextConfig {
 	}
 }
 
+// NewTealTextConfig returns the TextConfig for the "teal" theme.
 func NewTealTextConfig() TextConfig {
 	return TextConfig{
 		String:        "lightblue",
@@ -217,6 +221,7 @@ func NewTealTextConfig() TextConfig {
 	}
 }
 
+// NewRedBlackTextConfig returns the TextConfig for the "redblack" theme.
 func NewRedBlackTextConfig() TextConfig {
 	return TextConfig{
 		String:        "white",
@@ -247,6 +252,7 @@ func NewRedBlackTextConfig() TextConfig {
 	}
 }
 
+// NewLightBlueEditTextConfig returns the TextConfig for the light "blueedit" theme.
 func NewLightBlueEditTextConfig() TextConfig {
 	return TextConfig{
 		String:        "lightyellow",
@@ -277,6 +283,7 @@ func NewLightBlueEditTextConfig() TextConfig {
 	}
 }
 
+// NewDarkBlueEditTextConfig returns the TextConfig for the dark "blueedit" theme.
 func NewDarkBlueEditTextConfig() TextConfig {
 	return TextConfig{
 		String:        "lightyellow",
@@ -307,6 +314,7 @@ func NewDarkBlueEditTextConfig() TextConfig {
 	}
 }
 
+// NewLightVSTextConfig returns the TextConfig for the light "vs" theme.
 func NewLightVSTextConfig() TextConfig {
 	return TextConfig{
 		String:        "red",
@@ -337,6 +345,7 @@ func NewLightVSTextConfig() TextConfig {
 	}
 }
 
+// NewDarkVSTextConfig returns the TextConfig for the dark "vs" theme.
 func NewDarkVSTextConfig() TextConfig {
 	return TextConfig{
 		String:        "red",
@@ -367,6 +376,7 @@ func NewDarkVSTextConfig() TextConfig {
 	}
 }
 
+// NewNoColorTextConfig returns an empty TextConfig with no colors.
 func NewNoColorTextConfig() TextConfig {
 	return TextConfig{}
 }
@@ -402,7 +412,7 @@ func TextConfigByName(name string) TextConfig {
 	}
 }
 
-// LightTextConfigByName returns the TextConfig for the given theme name,
+// LightTextConfigByName will return the TextConfig for the given theme name,
 // preferring the light variant when one exists.
 func LightTextConfigByName(name string) TextConfig {
 	switch name {
@@ -415,7 +425,7 @@ func LightTextConfigByName(name string) TextConfig {
 	}
 }
 
-// TextConfigFromEnv returns the TextConfig selected by the O_THEME (or THEME)
+// TextConfigFromEnv will return the TextConfig selected by the O_THEME (or THEME)
 // environment variable, falling back to the default.
 // If NO_COLOR is set, an empty TextConfig (no colors) is returned.
 // If O_LIGHT is set, light theme variants are preferred.
@@ -433,7 +443,7 @@ func TextConfigFromEnv() TextConfig {
 	return TextConfigByName(name)
 }
 
-// SetDefaultTextConfigFromEnv updates DefaultTextConfig based on O_THEME.
+// SetDefaultTextConfigFromEnv will update DefaultTextConfig based on O_THEME.
 func SetDefaultTextConfigFromEnv() {
 	DefaultTextConfig = TextConfigFromEnv()
 }
