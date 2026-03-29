@@ -55,14 +55,15 @@ func DetectFromContentBytes(initial Mode, firstLine []byte, allBytesFunc func() 
 		if len(lastWord) > 1 {
 			if lastWord[0] == 'p' && lastWord[1] == 'e' && string(lastWord) == "perl" { // perl
 				return Perl, true
-			} else if lastWord[0] == 'p' && lastWord[1] == 'y' && strings.HasPrefix(string(lastWord), "python") { // check for "python", "python2.7", "python3" etc
-				return Python, true
-			} else {
-				switch string(lastWord) {
-				case "ash", "bash", "fish", "ksh", "oil", "sh", "tcsh", "zsh": // TODO: support Fish and Oil with their own file modes
-					return Shell, true
-				}
 			}
+			if lastWord[0] == 'p' && lastWord[1] == 'y' && strings.HasPrefix(string(lastWord), "python") { // check for "python", "python2.7", "python3" etc
+				return Python, true
+			}
+			switch string(lastWord) {
+			case "ash", "bash", "fish", "ksh", "oil", "sh", "tcsh", "zsh": // TODO: support Fish and Oil with their own file modes
+				return Shell, true
+			}
+
 		}
 		notConfig = true
 	} else if bytes.HasPrefix(firstLine, []byte("# $")) {
@@ -85,8 +86,8 @@ func DetectFromContentBytes(initial Mode, firstLine []byte, allBytesFunc func() 
 		return Diff, true
 	}
 	// If more lines start with "# " than "// " or "/* ", and mode is blank,
-	// set the mode to modeConfig and enable syntax highlighting.
-	if !notConfig && (m == Blank || m == Config || m == Markdown) {
+	// set the mode to Config and enable syntax highlighting.
+	if !notConfig && (m == Blank || m == Config || m == Markdown || m == Nix) {
 		foundFirstContent := false
 		hashComment := 0
 		slashComment := 0

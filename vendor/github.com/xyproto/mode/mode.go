@@ -1,11 +1,11 @@
-// package mode tries to find the correct editor mode, given a filename and/or file data
+// Package mode tries to find the correct editor mode, given a filename and/or file data
 package mode
 
 // Mode is a per-filetype mode, like for Markdown
 type Mode int
 
 const (
-	Blank          = iota // No file mode found
+	Blank          = iota // Blank is used if no file mode is found
 	ABC                   // ABC music notation
 	AIDL                  // Android-related: Android Interface Definition Language
 	Ada                   // Ada
@@ -19,29 +19,38 @@ const (
 	Bat                   // DOS and Windows batch files
 	Battlestar            // Battlestar
 	Bazel                 // Bazel and Starlark
+	Beef                  // Beef
+	Blueprint             // GNOME Blueprint
 	C                     // C
 	C3                    // C3
 	CMake                 // CMake files
 	CS                    // C#
-	CSound                // Csound
+	CSound                // CSound // music
 	CSS                   // CSS
+	Chuck                 // Chuck // music
 	Clojure               // Clojure
+	COBOL                 // COBOL
 	Config                // Config like yaml, yml, toml, and ini files
 	Cpp                   // C++
 	Crystal               // Crystal
 	D                     // D
 	Dart                  // Dart
 	Diff                  // Diff / patch
+	Dingo                 // Dingo
 	Docker                // For Dockerfiles
 	Email                 // For using o with ie. Mutt
+	Elixir                // Elixir
 	Elm                   // Elm
 	Erlang                // Erlang
+	Faust                 // Faust
 	Fortran77             // Fortran 77
 	Fortran90             // Fortran 90
 	FSharp                // F#
+	FSTAB                 // Filesystem table
 	Garnet                // Garnet
 	GDScript              // Godot Script
 	Git                   // Git commits and interactive rebases
+	Gleam                 // Gleam
 	Go                    // Go
 	GoMod                 // go.mod files
 	GoAssembly            // Go-style Assembly
@@ -73,6 +82,7 @@ const (
 	Markdown              // Markdown document
 	Mojo                  // Mojo
 	Nim                   // Nim
+	Nix                   // Nix
 	Nmap                  // Nmap scripts
 	Nroff                 // editing man pages
 	OCaml                 // OCaml
@@ -84,6 +94,7 @@ const (
 	Perl                  // Perl
 	PHP                   // PHP
 	PolicyLanguage        // SE Linux configuration files
+	POV                   // POV-Ray raytracer
 	Prolog                // Prolog
 	Python                // Python
 	R                     // R
@@ -94,17 +105,20 @@ const (
 	SCDoc                 // SC Doc
 	Scheme                // Scheme
 	Shader                // GLSL Shader
-	Shell                 // Shell scripts and PKGBUILD files
+	Shell                 // Shell scripts, PKGBUILD and APKBUILD files
+	Spec                  // RPM spec files / spec files
 	StandardML            // Standard ML
 	Starlark              // Starlark
 	SQL                   // Structured Query Language
 	Subversion            // Subversion commits
+	SuperCollider         // SuperCollider // music
 	Swift                 // Swift
 	Teal                  // Teal
 	Terra                 // Terra
 	Text                  // plain text documents
 	TypeScript            // TypeScript
 	V                     // V programming language
+	Vibe67                // Vibe67
 	Vim                   // Vim or NeoVim configuration, or .vim scripts
 	XML                   // XML
 	Zig                   // Zig
@@ -141,6 +155,10 @@ func (mode Mode) String() string {
 		return "Battlestar"
 	case Bazel:
 		return "Bazel"
+	case Beef:
+		return "Beef"
+	case Blueprint:
+		return "Blueprint"
 	case Blank:
 		return "-"
 	case C:
@@ -149,8 +167,12 @@ func (mode Mode) String() string {
 		return "C3"
 	case Clojure:
 		return "Clojure"
+	case Chuck:
+		return "Chuck"
 	case CMake:
 		return "CMake"
+	case COBOL:
+		return "COBOL"
 	case Config:
 		return "Configuration"
 	case Cpp:
@@ -169,26 +191,38 @@ func (mode Mode) String() string {
 		return "Dart"
 	case Diff:
 		return "Diff / patch"
+	case Dingo:
+		return "Dingo"
 	case Docker:
 		return "Docker"
+	case Elixir:
+		return "Elixir"
 	case Elm:
 		return "Elm"
 	case Email:
 		return "E-mail"
 	case Erlang:
 		return "Erlang"
+	case Faust:
+		return "Faust"
+	case Vibe67:
+		return "Vibe67"
 	case Fortran77:
 		return "Fortran 77"
 	case Fortran90:
 		return "Fortran 90"
 	case FSharp:
 		return "F#"
+	case FSTAB:
+		return "Filesystem Table"
 	case Garnet:
 		return "Garnet"
 	case GDScript:
 		return "Godot Script"
 	case Git:
 		return "Git"
+	case Gleam:
+		return "Gleam"
 	case GoAssembly:
 		return "Go-style Assembly"
 	case Go:
@@ -251,6 +285,8 @@ func (mode Mode) String() string {
 		return "Mojo"
 	case Nim:
 		return "Nim"
+	case Nix:
+		return "Nix"
 	case Nmap:
 		return "Nmap"
 	case Nroff:
@@ -273,6 +309,8 @@ func (mode Mode) String() string {
 		return "PHP"
 	case PolicyLanguage:
 		return "SELinux"
+	case POV:
+		return "POV-Ray"
 	case Prolog:
 		return "Prolog"
 	case Python:
@@ -295,6 +333,8 @@ func (mode Mode) String() string {
 		return "Shader"
 	case Shell:
 		return "Shell"
+	case Spec:
+		return "RPM Spec"
 	case SQL:
 		return "SQL"
 	case StandardML:
@@ -303,6 +343,8 @@ func (mode Mode) String() string {
 		return "Starlark"
 	case Subversion:
 		return "Subversion"
+	case SuperCollider:
+		return "SuperCollider"
 	case Swift:
 		return "Swift"
 	case Teal:

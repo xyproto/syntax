@@ -20,7 +20,7 @@ func hasS(sl []string, s string) bool {
 func Detect(filename string) Mode {
 	// A list of the most common configuration filenames that does not have an extension
 	var (
-		configFilenames = []string{"BUILD", "WORKSPACE", "config", "environment", "fstab", "group", "gshadow", "hostname", "hosts", "issue", "mirrorlist", "passwd", "shadow"}
+		configFilenames = []string{"BUILD", "WORKSPACE", "config", "environment", "group", "gshadow", "hostname", "hosts", "issue", "mirrorlist", "passwd", "shadow"}
 		mode            Mode
 	)
 
@@ -43,17 +43,19 @@ func Detect(filename string) Mode {
 		mode = Ollama
 	case baseFilename == "svn-commit.tmp":
 		mode = Subversion
+	case baseFilename == "fstab":
+		mode = FSTAB
 	case ext == ".vimrc" || ext == ".vim" || ext == ".nvim":
 		mode = Vim
-	case ext == ".mk" || strings.HasPrefix(baseFilename, "Make") || strings.HasPrefix(baseFilename, "makefile") || baseFilename == "GNUmakefile":
+	case ext == ".mk" || ext == ".mak" || ext == ".Mak" || strings.HasPrefix(baseFilename, "Make") || strings.HasPrefix(baseFilename, "makefile") || baseFilename == "GNUmakefile":
 		// NOTE: This one MUST come before the ext == "" check below!
 		mode = Make
 	case ext == ".just" || ext == ".justfile" || baseFilename == "justfile":
 		// NOTE: This one MUST come before the ext == "" check below!
 		mode = Just
-	case strings.HasSuffix(filename, ".git/config") || ext == ".cfg" || ext == ".conf" || ext == ".service" || ext == ".target" || ext == ".socket" || ext == ".godot" || ext == ".import" || strings.HasPrefix(ext, "rc"):
+	case strings.HasSuffix(filename, ".git/config") || ext == ".cfg" || ext == ".conf" || ext == ".service" || ext == ".target" || ext == ".socket" || ext == ".godot" || ext == ".import" || ext == ".tres" || ext == ".rc" || ext == ".prop" || ext == ".properties":
 		fallthrough
-	case ext == ".yml" || ext == ".toml" || ext == ".bp" || ext == ".rule" || strings.HasSuffix(filename, ".git/config") || (ext == "" && (strings.HasSuffix(baseFilename, "file") || strings.HasSuffix(baseFilename, "rc") || hasS(configFilenames, baseFilename))):
+	case ext == ".yml" || ext == ".yaml" || ext == ".toml" || ext == ".bp" || ext == ".rule" || (ext == "" && (strings.HasSuffix(baseFilename, "file") || strings.HasSuffix(baseFilename, "rc") || hasS(configFilenames, baseFilename))):
 		mode = Config
 	case ext == ".sh" || ext == ".fish" || ext == ".install" || ext == ".ksh" || ext == ".tcsh" || ext == ".bash" || ext == ".zsh" || ext == ".local" || ext == ".profile" || baseFilename == "PKGBUILD" || baseFilename == "APKBUILD" || (strings.HasPrefix(baseFilename, ".") && strings.Contains(baseFilename, "sh")): // This last part covers .bashrc, .zshrc etc
 		mode = Shell
@@ -93,19 +95,27 @@ func Detect(filename string) Mode {
 			mode = Basic
 		case ".bat":
 			mode = Bat
+		case ".bf":
+			mode = Beef
+		case ".blp":
+			mode = Blueprint
 		case ".bts":
 			mode = Battlestar
 		case ".c":
 			mode = C
 		case ".c3":
 			mode = C3
+		case ".v67":
+			mode = Vibe67
+		case ".cb", ".cbl", ".cob", ".cby", ".cobol":
+			mode = COBOL
 		case ".cm":
 			// Standard ML project file
 			mode = StandardML
-		case ".cpp", ".cc", ".c++", ".cxx", ".hpp", ".h", ".h++": // C++ mode
+		case ".cpp", ".cc", ".c++", ".cxx", ".hh", ".hpp", ".h", ".h++": // C++ mode
 			// TODO: Find a way to discover is a .h file is most likely to be C or C++
 			mode = Cpp
-		case ".clj", ".clojure", "cljs":
+		case ".clj", ".clojure", ".cljs":
 			mode = Clojure
 		case ".cs": // C#
 			mode = CS
@@ -115,6 +125,8 @@ func Detect(filename string) Mode {
 			mode = CSS
 		case ".csproj": // C# projects
 			mode = XML
+		case ".ck":
+			mode = Chuck
 		case ".cl", ".el", ".elisp", ".emacs", ".l", ".lisp", ".lsp":
 			mode = Lisp
 		case ".cr":
@@ -123,14 +135,20 @@ func Detect(filename string) Mode {
 			mode = D
 		case ".dart":
 			mode = Dart
+		case ".dingo":
+			mode = Dingo
 		case ".patch", ".diff":
 			mode = Diff
+		case ".ex", ".exs":
+			mode = Elixir
 		case ".elm":
 			mode = Elm
 		case ".eml":
 			mode = Email
 		case ".erl":
 			mode = Erlang
+		case ".dsp":
+			mode = Faust
 		case ".f":
 			mode = Fortran77
 		case ".f90":
@@ -143,6 +161,8 @@ func Detect(filename string) Mode {
 			mode = Garnet
 		case ".go":
 			mode = Go
+		case ".gleam":
+			mode = Gleam
 		case ".glsl":
 			mode = Shader
 		case ".gradle":
@@ -155,6 +175,8 @@ func Detect(filename string) Mode {
 			mode = Haskell
 		case ".htm", ".html":
 			mode = HTML
+		case ".http":
+			mode = HTTP
 		case ".hx", ".hxml":
 			mode = Haxe
 		case ".ini":
@@ -196,6 +218,8 @@ func Detect(filename string) Mode {
 			mode = GoMod // go.mod files
 		case ".nim":
 			mode = Nim
+		case ".nix":
+			mode = Nix
 		case ".nse":
 			mode = Nmap
 		case ".odin":
@@ -206,10 +230,16 @@ func Detect(filename string) Mode {
 			mode = ObjectPascal
 		case ".php", ".php3", ".php4", ".php5", ".phtml":
 			mode = PHP
-		case ".pl", ".pro":
+		case ".pl", ".perl":
+			mode = Perl
+		case ".plg", ".pro":
 			mode = Prolog
+		case ".proto":
+			mode = Config
 		case ".py":
 			mode = Python
+		case ".pov":
+			mode = POV
 		case ".mojo", "." + fireEmoji:
 			mode = Mojo
 		case ".r":
@@ -222,28 +252,36 @@ func Detect(filename string) Mode {
 			mode = Rust
 		case ".rst":
 			mode = ReStructured // reStructuredText
-		case ".S", ".asm", ".inc", ".mac", ".s":
+		case ".S", ".asm", ".mac", ".s":
 			// Temporary set the mode to Assembly. Go-style Assembly will be detected from the contents.
 			mode = Assembly
+		case ".inc":
+			mode = Assembly // TODO: Could be POV-Ray as well. Detect POV-Ray or Go-style Assembly from the contents.
+		case ".sc":
+			mode = SuperCollider // TODO: Could be Scheme as well. Detect Scheme from the contents.
 		case ".scala":
 			mode = Scala
 		case ".star", ".starlark":
 			mode = Starlark
-		case ".rkt", ".sc", ".sch", ".scm", ".scr", ".scrbl", ".sld", ".sls", ".sps", ".sps7", ".ss":
+		case ".rkt", ".sch", ".scm", ".scr", ".scrbl", ".sld", ".sls", ".sps", ".sps7", ".ss":
 			mode = Scheme
 		case ".swift":
 			mode = Swift
 		case ".fun", ".sml":
 			mode = StandardML
+		case ".spec":
+			mode = Spec
 		case ".sql":
 			mode = SQL
 		case ".t":
 			mode = Terra
 		case ".te":
 			mode = PolicyLanguage
+		case ".tf", ".tfvars":
+			mode = Config
 		case ".tl":
 			mode = Teal
-		case ".ts":
+		case ".ts", ".tsx":
 			mode = TypeScript
 		case ".txt", ".text", ".nfo", ".diz":
 			mode = Text
