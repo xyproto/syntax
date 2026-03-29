@@ -1,16 +1,14 @@
 # Syntax
 
-Syntax highlight text.
+Go package for syntax highlighting + the `hicat` utility (a bit like syntax highlighted `cat`).
 
-This started out as a fork of [syntaxhighlight](https://github.com/sourcegraph/syntaxhighlight), but several modifications has been made over several years.
+## Installing `hicat`
 
-### hicat
-
-The `hicat` utility (a bit like `bat` / syntax highlighted `cat`) can be installed with:
+The `hicat` utility can be installed with:
 
     go install github.com/xyproto/syntax/cmd/hicat@latest
 
 ### General info
 
 * License: BSD 3-Clause
-* Version: 1.12.1
+* Version: 1.12.2
