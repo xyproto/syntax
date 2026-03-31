@@ -1,13 +1,13 @@
 module github.com/xyproto/syntax
 
-go 1.25.8
+go 1.25.1
 
 require (
 	github.com/sourcegraph/annotate v0.0.0-20160123013949-f4cad6c6324d
 	github.com/xyproto/env/v2 v2.5.6
 	github.com/xyproto/files v1.10.8
 	github.com/xyproto/mode v0.12.6
-	github.com/xyproto/vt v1.7.13
+	github.com/xyproto/vt v1.7.14
 )
 
 require (

@@ -12,8 +12,8 @@ github.com/xyproto/lookslikegoasm v1.0.0 h1:/2nuhAu67tdjqXHkdOjP/UUAH9uJbAdptIkF
 github.com/xyproto/lookslikegoasm v1.0.0/go.mod h1:4ck0t+iH2rEAmjwnRhMZl72lCeCxK4iylxdcZ3K3FbY=
 github.com/xyproto/mode v0.12.6 h1:+lPZ/SaKWcvAU58KWJ5lCzv3RcnFhdVtl5/o3fbsn0s=
 github.com/xyproto/mode v0.12.6/go.mod h1:Bl7ymMitqlFLl3lgyAY3knkZb0t9/4fzgja7mWp66n0=
-github.com/xyproto/vt v1.7.13 h1:vcMmC09NTK3uHavEai2/ns5Z9Q8WpLlxBcZxS6+9l0o=
-github.com/xyproto/vt v1.7.13/go.mod h1:3gvMH2x5ikQK36XRIJ0MDryxTas2FHltaG+Gn7W063o=
+github.com/xyproto/vt v1.7.14 h1:qdmKfvjI6vH20P6SEBd3hRCDnQ/ONhvtCctGJ8rJTns=
+github.com/xyproto/vt v1.7.14/go.mod h1:Gmk94rbwlZ7F30dQ/iV+eA8qyulU8qcUYJtZQMKr3KE=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20210921155107-089bfa567519/go.mod h1:GvvjBRRGRdwPK5ydBHafDWAxML/pGHZbMvKqRZ5+Abc=
