@@ -7,7 +7,7 @@ require (
 	github.com/xyproto/env/v2 v2.5.6
 	github.com/xyproto/files v1.10.8
 	github.com/xyproto/mode v0.12.6
-	github.com/xyproto/vt v1.7.10
+	github.com/xyproto/vt v1.7.11
 )
 
 require (
