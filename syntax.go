@@ -313,7 +313,7 @@ func AdjustKeywords(m mode.Mode) {
 	case mode.Text:
 		ClearKeywords()
 	case mode.Spec:
-		AddKeywords(specKeywords)
+		AddKeywords(specWords)
 	case mode.Shader:
 		AddKeywords([]string{"buffer", "bvec2", "bvec3", "bvec4", "coherent", "dvec2", "dvec3", "dvec4", "flat", "in", "inout", "invariant", "ivec2", "ivec3", "ivec4", "layout", "mat", "mat2", "mat3", "mat4", "noperspective", "out", "precision", "readonly", "restrict", "smooth", "uniform", "uvec2", "uvec3", "uvec4", "vec2", "vec3", "vec4", "volatile", "writeonly"})
 		fallthrough
