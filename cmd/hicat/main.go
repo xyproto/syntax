@@ -18,8 +18,8 @@ func main() {
 		args = flag.Args()
 	)
 
-	// Apply the O_THEME setting.
-	syntax.SetDefaultTextConfigFromEnv()
+	// The DefaultTextConfig is used for syntax highlighting.
+	// Set syntax.DefaultTextConfig before this point to customize colors.
 
 	if files.DataReadyOnStdin() {
 		inputBytes, err := io.ReadAll(os.Stdin)
