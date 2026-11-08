@@ -22,7 +22,7 @@ github.com/xyproto/files
 # github.com/xyproto/lookslikegoasm v1.0.2
 ## explicit; go 1.23.2
 github.com/xyproto/lookslikegoasm
-# github.com/xyproto/mode v0.12.18
+# github.com/xyproto/mode v0.12.19
 ## explicit; go 1.23.2
 github.com/xyproto/mode
 # github.com/xyproto/vt v1.9.22

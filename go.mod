@@ -5,7 +5,7 @@ go 1.26.0
 require (
 	github.com/sourcegraph/annotate v0.0.0-20160123013949-f4cad6c6324d
 	github.com/xyproto/files v1.10.8
-	github.com/xyproto/mode v0.12.18
+	github.com/xyproto/mode v0.12.19
 	github.com/xyproto/vt v1.9.22
 )
 
